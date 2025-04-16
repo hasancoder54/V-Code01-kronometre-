@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kronometre</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .özel {
+      text-align: center;
+      color: #FFA500; /* Turuncu renk */
+      font-size: 36px;
+      margin: 10px 0;
+    }
+    
+    body {
+      margin: 0;
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: center; /* Ortada hizalama */
+      align-items: center;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .circle-container {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin-bottom: 30px;
+    }
+
+    .glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,165,0,0.6) 0%, transparent 70%);
+      z-index: 1;
+    }
+
+    .rotating-circle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 4px solid orange;
+      animation: rotate 60s linear infinite;
+      z-index: 2;
+      box-shadow: 0 0 10px orange;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin: 10px 0;
+    }
+
+    button {
+      font-size: 16px;
+      padding: 10px 15px;
+      margin: 5px;
+      background-color: orange;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ffb347;
+    }
+
+    /* Saat için stil */
+    #current-time {
+      color: #00f0ff; /* Neon mavi */
+      font-size: 24px;
+      font-weight: bold;
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+    }
+  </style>
+</head>
+<body>
+  <div id="current-time">00:00</div> <!-- Gerçek zaman saati buraya eklenecek -->
+
+  <div class="header">
+    <h1 class="özel">Kronometre</h1>
+  </div>
+
+  <div class="circle-container">
+    <div class="glow"></div>
+    <div class="rotating-circle"></div>
+    <div class="center-text">Süresine kadar</div>
+  </div>
+
+  <h1 id="display">00:00:00</h1>
+  <div>
+    <button onclick="start()">Başlat</button>
+    <button onclick="stop()">Duraklat</button>
+    <button onclick="reset()">Sıfırla</button>
+  </div>
+
+  <script>
+    let timer;
+    let seconds = 0;
+    let running = false;
+
+    // Kronometreyi güncelleme
+    function updateDisplay() {
+      const hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const secs = String(seconds % 60).padStart(2, '0');
+      document.getElementById('display').innerText = `${hrs}:${mins}:${secs}`;
+    }
+
+    // Gerçek saat güncellemeleri
+    function updateCurrentTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('current-time').innerText = `${hours}:${minutes}`;
+    }
+
+    function start() {
+      if (!running) {
+        running = true;
+        timer = setInterval(() => {
+          seconds++;
+          updateDisplay();
+        }, 1000);
+      }
+    }
+
+    function stop() {
+      running = false;
+      clearInterval(timer);
+    }
+
+    function reset() {
+      stop();
+      seconds = 0;
+      updateDisplay();
+    }
+
+    // Gerçek saat sürekli olarak güncelleniyor
+    setInterval(updateCurrentTime, 1000);
+  </script>
+</body>
+</html>
